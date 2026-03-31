@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+<title>الزيارات الميدانية — إدارة المخاطر</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green:#0d7a55;--green2:#1a9966;--greenl:#eaf7f1;--greenb:#9de5c8;
+  --navy:#0f1f3d;--navy3:#1e3360;--w:#fff;--bg:#f4f7fb;
+  --bdr:#dde5f0;--t1:#0d1b31;--t2:#46607c;--t3:#8fa8c4;
+  --err:#c0392b;--errl:#fef0ee;--errb:#f5b7b1;
+  --r:14px;--r2:9px;--r3:6px;
+  --shx:0 24px 64px rgba(15,31,61,.18);--sh:0 1px 4px rgba(15,31,61,.06),0 2px 8px rgba(15,31,61,.04)
+}
+*,::before,::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;direction:rtl;-webkit-font-smoothing:antialiased}
+
+/* LOGIN */
+#loginWrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;
+  background:var(--navy);
+  background-image:radial-gradient(ellipse 60% 40% at 80% 15%,rgba(13,122,85,.18) 0%,transparent 60%),
+                   radial-gradient(ellipse 50% 50% at 10% 85%,rgba(13,122,85,.10) 0%,transparent 60%)}
+.lcard{background:var(--w);border-radius:20px;padding:48px 42px;width:100%;max-width:400px;box-shadow:var(--shx);text-align:center}
+.lmark{width:72px;height:72px;background:linear-gradient(135deg,var(--green),var(--green2));border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:30px;margin:0 auto 20px;box-shadow:0 8px 28px rgba(13,122,85,.30);border:2px solid rgba(13,122,85,.2)}
+.lcard h1{font-size:18px;font-weight:900;color:var(--navy)}
+.lsub{font-size:12px;color:var(--t2);margin:5px 0 28px;line-height:1.7}
+.lf{text-align:right;margin-bottom:14px}
+.lf label{display:block;font-size:12px;font-weight:700;color:var(--t2);margin-bottom:6px}
+.lf input{width:100%;padding:13px 15px;border:1.5px solid var(--bdr);border-radius:var(--r2);font-family:'Cairo',sans-serif;font-size:14px;color:var(--t1);background:var(--bg);outline:none;transition:border-color .2s,box-shadow .2s;direction:rtl}
+.lf input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(13,122,85,.10);background:var(--w)}
+.lbtn{width:100%;padding:14px;background:linear-gradient(135deg,var(--green),var(--green2));color:var(--w);border:none;border-radius:var(--r2);font-family:'Cairo',sans-serif;font-size:15px;font-weight:800;cursor:pointer;transition:opacity .2s}
+.lbtn:hover{opacity:.92}
+.lerr{background:var(--errl);color:var(--err);border:1px solid var(--errb);border-radius:var(--r3);padding:9px 14px;font-size:13px;margin-top:12px;display:none}
+.lerr.on{display:block}
+
+/* APP */
+#app{display:none;min-height:100vh;flex-direction:column}
+#app.on{display:flex}
+.topbar{background:linear-gradient(135deg,var(--green),var(--green2));padding:0 22px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:0 2px 16px rgba(13,122,85,.35);flex-shrink:0}
+.tbrand{display:flex;align-items:center;gap:10px}
+.ticon{width:34px;height:34px;background:rgba(255,255,255,.18);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px}
+.tbrand h1{font-size:15px;font-weight:800;color:#fff}
+.btn-out{background:rgba(255,255,255,.12);color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.15);border-radius:var(--r3);padding:7px 12px;font-family:'Cairo',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s}
+.btn-out:hover{background:rgba(255,255,255,.22);color:#fff}
+.page{flex:1;max-width:660px;width:100%;margin:0 auto;padding:26px 18px 60px}
+
+/* FORM CARD */
+.card{background:var(--w);border:1px solid var(--bdr);border-radius:var(--r);padding:26px;box-shadow:var(--sh);margin-bottom:18px}
+.card-hdr{border-bottom:1px solid var(--bdr);padding-bottom:14px;margin-bottom:22px}
+.card-hdr h2{font-size:16px;font-weight:900;color:var(--green);display:flex;align-items:center;gap:7px}
+.card-hdr p{font-size:12px;color:var(--t2);margin-top:4px}
+.ff{margin-bottom:15px}
+.ff label{display:block;font-size:12px;font-weight:700;color:var(--t2);margin-bottom:6px}
+.ff label .req{color:var(--err);margin-right:2px}
+.ff input{width:100%;padding:12px 14px;border:1.5px solid var(--bdr);border-radius:var(--r2);font-family:'Cairo',sans-serif;font-size:14px;color:var(--t1);background:var(--bg);outline:none;transition:border-color .2s,box-shadow .2s;direction:rtl}
+.ff input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(13,122,85,.10);background:var(--w)}
+.ff input[readonly]{background:var(--greenl);border-color:var(--greenb);color:var(--green);font-weight:700;cursor:default}
+.gps-row{display:flex;gap:8px}
+.gps-row input{flex:1}
+.btn-gps{background:linear-gradient(135deg,var(--green),var(--green2));color:#fff;border:none;border-radius:var(--r2);padding:12px 15px;font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:5px;transition:opacity .2s;flex-shrink:0;box-shadow:0 2px 8px rgba(13,122,85,.25)}
+.btn-gps:hover{opacity:.88}
+.btn-gps:disabled{opacity:.45;cursor:default}
+.gps-info{margin-top:7px;font-size:11px;color:var(--t2);display:none;line-height:1.6}
+.gps-info.on{display:block}
+.gps-info a{color:var(--green);font-weight:700;text-decoration:none}
+.gps-info a:hover{text-decoration:underline}
+.btn-submit{width:100%;padding:14px;background:linear-gradient(135deg,var(--green),var(--green2));color:#fff;border:none;border-radius:var(--r2);font-family:'Cairo',sans-serif;font-size:15px;font-weight:800;cursor:pointer;margin-top:6px;transition:opacity .2s;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 14px rgba(13,122,85,.28)}
+.btn-submit:hover{opacity:.9}
+.btn-submit:disabled{opacity:.4;cursor:default}
+.fmsg{padding:10px 14px;border-radius:var(--r3);font-size:13px;margin-top:11px;display:none;line-height:1.55}
+.fmsg.on{display:block}
+.fmsg.ok{background:var(--greenl);color:var(--green);border:1px solid var(--greenb)}
+.fmsg.err{background:var(--errl);color:var(--err);border:1px solid var(--errb)}
+.fmsg.load{background:#eaf2fb;color:#1557a0;border:1px solid #90c5f0;display:flex;align-items:center;gap:8px}
+
+/* HISTORY TABLE */
+.tcard{background:var(--w);border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh)}
+.thdr{padding:14px 20px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between}
+.thdr h3{font-size:13px;font-weight:800;color:var(--t1);display:flex;align-items:center;gap:6px}
+.tcnt{font-size:11px;color:var(--t3)}
+.tscroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;direction:rtl;min-width:500px}
+thead th{padding:10px 13px;text-align:right;font-size:11px;font-weight:700;color:rgba(255,255,255,.88);background:var(--green);white-space:nowrap}
+tbody tr{border-bottom:1px solid var(--bdr);transition:background .1s}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:var(--greenl)}
+td{padding:10px 13px;font-size:13px;color:var(--t1)}
+.td-name{font-weight:700}
+.td-dim{color:var(--t2);font-size:12px}
+.map-link{color:var(--green);font-weight:700;font-size:11px;text-decoration:none;display:inline-flex;align-items:center;gap:3px;padding:2px 9px;background:var(--greenl);border-radius:20px;border:1px solid var(--greenb)}
+.map-link:hover{background:#d0eed9}
+.empty-row{text-align:center;padding:32px;color:var(--t3);font-size:13px}
+.spin{width:14px;height:14px;border:2px solid rgba(21,95,160,.2);border-top-color:#1557a0;border-radius:50%;animation:sp .7s linear infinite;display:inline-block;flex-shrink:0}
+@keyframes sp{to{transform:rotate(360deg)}}
+@keyframes rin{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:translateY(0)}}
+tbody tr{animation:rin .15s ease both}
+@media(max-width:480px){.lcard{padding:30px 20px}.gps-row{flex-direction:column}.btn-gps{width:100%;justify-content:center}.page{padding:14px 12px 50px}.card{padding:18px 14px}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginWrap">
+  <div class="lcard">
+    <div class="lmark">📍</div>
+    <h1>الزيارات الميدانية</h1>
+    <p class="lsub">نظام إدارة المخاطر — ضباط الميدان<br>أدخل بيانات الدخول للمتابعة</p>
+    <div class="lf">
+      <label>كود الوصول</label>
+      <input type="text" id="loginCode" placeholder="أدخل كود الوصول..."
+             autocomplete="off"
+             onkeydown="if(event.key==='Enter')document.getElementById('loginPw').focus()">
+    </div>
+    <div class="lf">
+      <label>كلمة المرور</label>
+      <input type="password" id="loginPw" placeholder="••••••••••••"
+             onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="lbtn" onclick="doLogin()">دخول ←</button>
+    <div class="lerr" id="loginErr">❌ كود الوصول أو كلمة المرور غير صحيحة</div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app">
+  <header class="topbar">
+    <div class="tbrand">
+      <div class="ticon">📍</div>
+      <h1>الزيارات الميدانية</h1>
+    </div>
+    <button class="btn-out" onclick="doLogout()">خروج</button>
+  </header>
+
+  <div class="page">
+
+    <!-- Form -->
+    <div class="card">
+      <div class="card-hdr">
+        <h2>📝 تسجيل زيارة ميدانية جديدة</h2>
+        <p>تُحفظ الزيارة مباشرة في Firebase — متاحة فوراً للمشرفين</p>
+      </div>
+
+      <div class="ff">
+        <label><span class="req">*</span> اسم العميل</label>
+        <input type="text" id="f_client" placeholder="اسم العميل كاملاً">
+      </div>
+      <div class="ff">
+        <label><span class="req">*</span> اسم الأخصائي الميداني</label>
+        <input type="text" id="f_officer" placeholder="اسم ضابط / أخصائي المخاطر">
+      </div>
+      <div class="ff">
+        <label><span class="req">*</span> الفرع</label>
+        <input type="text" id="f_branch" placeholder="مثال: بني سويف، الفيوم، القوصية...">
+      </div>
+      <div class="ff">
+        <label>تاريخ الزيارة</label>
+        <input type="text" id="f_date" readonly placeholder="يُعيَّن تلقائياً">
+      </div>
+      <div class="ff">
+        <label>الموقع الجغرافي (GPS)</label>
+        <div class="gps-row">
+          <input type="text" id="f_gps" readonly placeholder="اضغط &quot;تحديد الموقع&quot; للتحديد...">
+          <button class="btn-gps" id="gpsBtn" onclick="getGPS()">📍 تحديد الموقع</button>
+        </div>
+        <div class="gps-info" id="gpsInfo"></div>
+      </div>
+
+      <button class="btn-submit" id="submitBtn" onclick="submitVisit()">
+        ✅ حفظ الزيارة في Firebase
+      </button>
+      <div class="fmsg" id="fmsg"></div>
+    </div>
+
+    <!-- History -->
+    <div class="tcard">
+      <div class="thdr">
+        <h3>📋 الزيارات المسجلة (آخر 30)</h3>
+        <span class="tcnt" id="histCnt">جاري التحميل...</span>
+      </div>
+      <div class="tscroll">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th><th>العميل</th><th>الأخصائي</th>
+              <th>الفرع</th><th>التاريخ</th><th>الموقع</th>
+            </tr>
+          </thead>
+          <tbody id="histBody">
+            <tr><td colspan="6" class="empty-row">جاري التحميل...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODULE SCRIPT -->
+<script type="module">
+'use strict';
+
+import { initializeApp }  from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+import {
+  getFirestore, collection, doc,
+  setDoc, onSnapshot, query, orderBy, limit
+} from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+
+// ── Firebase config (same project as main system) ──
+const FB = {
+  apiKey:     "AIzaSyAQRFyfayXYCDFSaJ23HUQsXrOW8cVuTJ4",
+  authDomain: "cash-makhater2-data.firebaseapp.com",
+  projectId:  "cash-makhater2-data",
+  appId:      "1:431443769425:web:1481dd22155f73f2a7e070"
+};
+
+const FV_COL  = 'field_visits';
+const SES_KEY = 'fv_ses_v1';
+
+// State
+let db       = null;
+let fvUnsub  = null;
+let gpsLat   = null;
+let gpsLng   = null;
+let gpsLink  = '';
+
+// ── Init Firebase ──
+function initFB() {
+  try {
+    const app = initializeApp(FB, 'fv-site');
+    db = getFirestore(app);
+  } catch(e) { console.error('[FV] Firebase init:', e); }
+}
+
+// ── Auth ──
+function doLogin() {
+  const code = (document.getElementById('loginCode').value || '').trim();
+  const pw   = (document.getElementById('loginPw').value   || '').trim();
+  if (code === '100100' && pw === 'Fadicash@2026') {
+    sessionStorage.setItem(SES_KEY, '1');
+    document.getElementById('loginWrap').style.display = 'none';
+    document.getElementById('app').classList.add('on');
+    document.getElementById('loginErr').classList.remove('on');
+    boot();
+  } else {
+    document.getElementById('loginErr').classList.add('on');
+    document.getElementById('loginPw').value = '';
+    document.getElementById('loginPw').focus();
+  }
+}
+
+function doLogout() {
+  sessionStorage.removeItem(SES_KEY);
+  if (fvUnsub) { fvUnsub(); fvUnsub = null; }
+  document.getElementById('app').classList.remove('on');
+  document.getElementById('loginWrap').style.display = 'flex';
+  document.getElementById('loginCode').value = '';
+  document.getElementById('loginPw').value   = '';
+  document.getElementById('loginErr').classList.remove('on');
+}
+
+// ── Boot after login ──
+function boot() {
+  // Auto-date
+  document.getElementById('f_date').value =
+    new Date().toLocaleDateString('ar-EG', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+
+  if (!db) initFB();
+  listenVisits();
+}
+
+// ── GPS ──
+function getGPS() {
+  const btn  = document.getElementById('gpsBtn');
+  const inp  = document.getElementById('f_gps');
+  const info = document.getElementById('gpsInfo');
+  if (!navigator.geolocation) { inp.value = 'الجهاز لا يدعم GPS'; return; }
+  btn.disabled = true;
+  btn.textContent = '⏳ جاري التحديد...';
+  inp.value = '';
+  info.classList.remove('on');
+  gpsLat = gpsLng = null; gpsLink = '';
+
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      gpsLat  = pos.coords.latitude;
+      gpsLng  = pos.coords.longitude;
+      gpsLink = `https://maps.google.com/?q=${gpsLat},${gpsLng}`;
+      inp.value = `${gpsLat.toFixed(6)}, ${gpsLng.toFixed(6)}`;
+      info.innerHTML = `📌 دقة: ±${Math.round(pos.coords.accuracy)}م &nbsp;|&nbsp; <a href="${gpsLink}" target="_blank" rel="noopener">🗺️ فتح في خرائط Google</a>`;
+      info.classList.add('on');
+      btn.disabled = false;
+      btn.textContent = '✅ تم التحديد';
+    },
+    err => {
+      const m = {1:'رُفض الوصول — السماح من إعدادات المتصفح',2:'تعذر تحديد الموقع',3:'انتهت المهلة'};
+      inp.value = m[err.code] || 'خطأ في GPS';
+      btn.disabled = false;
+      btn.textContent = '🔄 إعادة المحاولة';
+    },
+    { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+  );
+}
+
+// ── Submit ──
+async function submitVisit() {
+  const client  = (document.getElementById('f_client').value  || '').trim();
+  const officer = (document.getElementById('f_officer').value || '').trim();
+  const branch  = (document.getElementById('f_branch').value  || '').trim();
+  const date    = (document.getElementById('f_date').value    || '').trim();
+
+  if (!client)  { msg('❌ أدخل اسم العميل',   'err'); document.getElementById('f_client').focus();  return; }
+  if (!officer) { msg('❌ أدخل اسم الأخصائي', 'err'); document.getElementById('f_officer').focus(); return; }
+  if (!branch)  { msg('❌ أدخل اسم الفرع',    'err'); document.getElementById('f_branch').focus();  return; }
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  msg('<span class="spin"></span> جاري الحفظ في Firebase...', 'load');
+
+  const rec = {
+    clientName:   client,
+    officerName:  officer,
+    branch:       branch,
+    visitDate:    date,
+    visitDateISO: new Date().toISOString().slice(0, 10),
+    latitude:     gpsLat  || null,
+    longitude:    gpsLng  || null,
+    mapLink:      gpsLink || null,
+    hasGPS:       !!(gpsLat && gpsLng),
+    timestamp:    new Date().toISOString()
+  };
+
+  let saved = false;
+  if (db) {
+    try {
+      const ref = doc(collection(db, FV_COL));
+      await setDoc(ref, { ...rec, _uid: ref.id });
+      saved = true;
+    } catch(e) { console.error('[FV] write error:', e); }
+  }
+
+  if (!saved) {
+    const loc = JSON.parse(localStorage.getItem('fv_offline') || '[]');
+    loc.unshift({ ...rec, _uid: `loc_${Date.now()}` });
+    localStorage.setItem('fv_offline', JSON.stringify(loc.slice(0, 100)));
+  }
+
+  // Reset
+  ['f_client','f_officer','f_branch','f_gps'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('gpsInfo').classList.remove('on');
+  document.getElementById('gpsBtn').textContent = '📍 تحديد الموقع';
+  gpsLat = gpsLng = null; gpsLink = '';
+  btn.disabled = false;
+
+  msg(saved
+    ? `✅ تم حفظ زيارة "${client}" في Firebase`
+    : `⚠️ حُفظت محلياً (Firebase غير متاح)`, 'ok');
+  setTimeout(clearMsg, 6000);
+}
+
+// ── Live listener for history ──
+function listenVisits() {
+  if (!db) { renderTable(JSON.parse(localStorage.getItem('fv_offline') || '[]')); return; }
+  if (fvUnsub) fvUnsub();
+  const q = query(collection(db, FV_COL), orderBy('timestamp', 'desc'), limit(30));
+  fvUnsub = onSnapshot(q,
+    snap => renderTable(snap.docs.map(d => ({ _uid: d.id, ...d.data() }))),
+    err  => { console.error('[FV] listener:', err); renderTable([]); }
+  );
+}
+
+function renderTable(rows) {
+  const tb  = document.getElementById('histBody');
+  const cnt = document.getElementById('histCnt');
+  if (!rows.length) {
+    tb.innerHTML = `<tr><td colspan="6" class="empty-row">لا توجد زيارات بعد</td></tr>`;
+    cnt.textContent = '0 زيارة';
+    return;
+  }
+  cnt.textContent = `${rows.length} زيارة`;
+  tb.innerHTML = rows.map((v, i) => {
+    const mapCell = v.mapLink
+      ? `<a class="map-link" href="${esc(v.mapLink)}" target="_blank" rel="noopener">🗺️ خريطة</a>`
+      : '<span style="color:var(--t3);font-size:11px">—</span>';
+    return `<tr style="animation-delay:${i*.015}s">
+      <td class="td-dim">${i + 1}</td>
+      <td class="td-name">${esc(v.clientName  || '—')}</td>
+      <td class="td-dim">${esc(v.officerName  || '—')}</td>
+      <td>${esc(v.branch     || '—')}</td>
+      <td class="td-dim">${esc(v.visitDate    || '—')}</td>
+      <td>${mapCell}</td>
+    </tr>`;
+  }).join('');
+}
+
+function msg(html, type) {
+  const el = document.getElementById('fmsg');
+  el.innerHTML = html;
+  el.className = `fmsg on ${type}`;
+}
+function clearMsg() {
+  document.getElementById('fmsg').classList.remove('on');
+}
+function esc(s) {
+  return String(s || '')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Expose + session restore ──
+window.addEventListener('DOMContentLoaded', () => {
+  Object.assign(window, { doLogin, doLogout, getGPS, submitVisit });
+  if (sessionStorage.getItem(SES_KEY) === '1') {
+    document.getElementById('loginWrap').style.display = 'none';
+    document.getElementById('app').classList.add('on');
+    boot();
+  } else {
+    setTimeout(() => document.getElementById('loginCode').focus(), 80);
+  }
+});
+</script>
+
+<!-- Bridge: handles clicks before module resolves -->
+<script>
+(function(){
+  var fns=['doLogin','doLogout','getGPS','submitVisit'],q=[];
+  fns.forEach(function(n){
+    window[n]=function(){
+      if(window[n]&&!window[n]._b){return window[n].apply(window,arguments);}
+      q.push({n:n,a:arguments});
+    };
+    window[n]._b=true;
+  });
+  window._fvReplay=function(){
+    q.forEach(function(c){if(window[c.n]&&!window[c.n]._b)window[c.n].apply(window,c.a);});
+    q=[];
+  };
+})();
+</script>
+
+</body>
+</html>
