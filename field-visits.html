@@ -2,12 +2,7 @@
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
-<title>Field Visits</title>
-<style>
-body{font-family:Arial;text-align:center}
-input{padding:10px;margin:5px;width:250px}
-button{padding:10px;margin:5px}
-</style>
+<title>الزيارات الميدانية</title>
 </head>
 
 <body>
@@ -16,23 +11,21 @@ button{padding:10px;margin:5px}
   <h3>تسجيل الدخول</h3>
   <input id="code" placeholder="الكود">
   <input id="pass" type="password" placeholder="كلمة المرور">
-  <br>
   <button onclick="doLogin()">دخول</button>
 </div>
 
 <div id="app" style="display:none">
-  <h3>تسجيل زيارة ميدانية</h3>
+  <h3>تسجيل زيارة</h3>
 
   <input id="client" placeholder="اسم العميل"><br>
   <input id="officer" placeholder="اسم المسئول"><br>
   <input id="branch" placeholder="الفرع"><br>
   <input id="date" readonly><br>
 
-  <button onclick="getGPS()">📍 تحديد الموقع</button><br>
+  <button onclick="getGPS()">تحديد الموقع</button>
   <button onclick="submitVisit()">إرسال</button>
 </div>
 
-<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
@@ -41,7 +34,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyAQRFyfayXYCDFSaJ23HUQsXrOW8cVuTJ4",
   authDomain: "PUT",
   databaseURL: "PUT",
-  projectId: "PUT",
+  projectId: "PUT"
 };
 
 firebase.initializeApp(firebaseConfig);
@@ -50,39 +43,33 @@ const db = firebase.database();
 let lat="",lng="";
 
 function doLogin(){
-  const c = document.getElementById("code").value;
-  const p = document.getElementById("pass").value;
-
-  if(c==="100100" && p==="Fadicash@2026"){
-    document.getElementById("login").style.display="none";
-    document.getElementById("app").style.display="block";
-    document.getElementById("date").value = new Date().toLocaleDateString();
+  if(code.value==="100100" && pass.value==="Fadicash@2026"){
+    login.style.display="none";
+    app.style.display="block";
+    date.value=new Date().toLocaleDateString();
   }else{
-    alert("بيانات غلط");
+    alert("خطأ");
   }
 }
 
 function getGPS(){
   navigator.geolocation.getCurrentPosition(pos=>{
-    lat = pos.coords.latitude;
-    lng = pos.coords.longitude;
+    lat=pos.coords.latitude;
+    lng=pos.coords.longitude;
     alert("تم تحديد الموقع");
   });
 }
 
 function submitVisit(){
-  const data={
-    clientName:document.getElementById("client").value,
-    officerName:document.getElementById("officer").value,
-    branch:document.getElementById("branch").value,
-    visitDate:document.getElementById("date").value,
+  db.ref("field_visits").push({
+    clientName:client.value,
+    officerName:officer.value,
+    branch:branch.value,
+    visitDate:date.value,
     latitude:lat,
     longitude:lng,
-    mapLink:`https://maps.google.com/?q=${lat},${lng}`,
-    timestamp:Date.now()
-  };
-
-  db.ref("field_visits").push(data);
+    mapLink:`https://maps.google.com/?q=${lat},${lng}`
+  });
   alert("تم الحفظ");
 }
 </script>
