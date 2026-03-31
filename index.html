@@ -20,6 +20,23 @@
   --sh:0 1px 4px rgba(15,31,61,.06),0 2px 8px rgba(15,31,61,.04);
   --shm:0 4px 20px rgba(15,31,61,.10);
   --shx:0 24px 64px rgba(15,31,61,.18);
+  <a href="field-visits.html" target="_blank">الزيارات الميدانية</a>
+  <h3>الزيارات الميدانية</h3>
+
+<button onclick="loadFieldVisits()">تحميل</button>
+
+<table>
+<thead>
+<tr>
+<th>العميل</th>
+<th>المسئول</th>
+<th>الفرع</th>
+<th>التاريخ</th>
+<th>الموقع</th>
+</tr>
+</thead>
+<tbody id="fvBody"></tbody>
+</table>
 }
 *,::before,::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
@@ -1807,5 +1824,23 @@ function loadFvAdmin(){
 window.loadFvAdmin = loadFvAdmin;
 
 </script>
+  function loadFieldVisits(){
+  firebase.database().ref("field_visits").once("value", snap=>{
+    const data = snap.val() || {};
+    fvBody.innerHTML="";
+
+    Object.values(data).forEach(r=>{
+      fvBody.innerHTML += `
+        <tr>
+          <td>${r.clientName||""}</td>
+          <td>${r.officerName||""}</td>
+          <td>${r.branch||""}</td>
+          <td>${r.visitDate||""}</td>
+          <td><a href="${r.mapLink}" target="_blank">عرض</a></td>
+        </tr>
+      `;
+    });
+  });
+}
 </body>
 </html>
